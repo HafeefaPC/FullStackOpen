@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import SearchForm from "./componetnts/SearchForm";
 import AddPersonForm from "./componetnts/AddPersonForm";
 import FilteredList from "./componetnts/FilterList";
+import { response } from "express";
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -39,6 +41,17 @@ const App = () => {
   const filteredPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(search)
   );
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/persons")
+      .then(response => {
+        setPersons(response.data);
+      })
+      .catch(error => {
+        console.error("error:", error);
+      });
+  }, []);
   return (
     <div>
       <h2>Phonebook</h2>
